@@ -1,5 +1,4 @@
 === Disable Author Archives ===
-Contributors: freemp
 Tags: author, archives, pages, links, disable, remove, 404
 Requires at least: 2.9
 Tested up to: 6.6
