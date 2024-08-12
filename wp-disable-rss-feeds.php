@@ -33,6 +33,23 @@ add_action( 'do_feed_atom', 'wpcode_snippet_disable_feed', 1 );
 add_action( 'do_feed_rss2_comments', 'wpcode_snippet_disable_feed', 1 );
 add_action( 'do_feed_atom_comments', 'wpcode_snippet_disable_feed', 1 );
 
-// Remove links to feed from the header.
-remove_action( 'wp_head', 'feed_links_extra', 3 );
-remove_action( 'wp_head', 'feed_links', 2 );
+
+// Remove feed URLS from the header.
+function  wdrf_disable_feed_links() {
+    remove_action( 'wp_head', 'feed_links', 2 );
+    remove_action( 'wp_head', 'feed_links_extra', 3 );
+}
+
+add_action('init', 'wdrf_disable_feed_links');
+
+// Redirect feed requests to the original page
+function wdrf_redirect_feed_requests_to_original_page($query) {
+    if ($query->is_feed) {
+        global $wp;
+        $current_url = home_url(add_query_arg(array(), $wp->request));
+        $original_url = preg_replace('/\/feed(\/.*|$)/', '', $current_url);
+        wp_redirect($original_url, 301);
+        exit;
+    }
+}
+add_action('parse_query', 'wdrf_redirect_feed_requests_to_original_page');
